@@ -1,5 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
-import ManageCourse from "../../../components/Dashboard/Course/ManageCourse";
+import ManageCourse from "../../../../components/Dashboard/Course/ManageCourse";
 
 
 const Courses = () => {

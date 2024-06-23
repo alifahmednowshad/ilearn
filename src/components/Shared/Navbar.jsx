@@ -11,25 +11,23 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import UseAuth from "../../hooks/UseAuth";
 import { Link } from "react-router-dom";
 
-const pages = ["Home", "About", "Courses", "Blog" , "Contact"];
+const pages = ["Home", "About", "Courses", "Blog", "Contact"];
 
 const Navbar = () => {
-  
-    const { logOut, user } = UseAuth();
+  const { logOut, user } = UseAuth();
 
-    const handleLogout = async () => {
-      try {
-        await logOut();
-        console.log("User logged out successfully");
-      } catch (error) {
-        console.error("Error logging out:", error);
-      }
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      console.log("User logged out successfully");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
   };
-  
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -52,7 +50,6 @@ const Navbar = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -63,14 +60,13 @@ const Navbar = () => {
               display: { xs: "none", md: "flex" },
               fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: ".3rem",
+              letterSpacing: ".1rem",
               color: "inherit",
               textDecoration: "none",
             }}
           >
-            I Learn
+            ILearn
           </Typography>
-
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -107,7 +103,6 @@ const Navbar = () => {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -119,19 +114,26 @@ const Navbar = () => {
               flexGrow: 1,
               fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: ".3rem",
+              letterSpacing: ".1rem",
               color: "inherit",
               textDecoration: "none",
             }}
           >
             I Learn
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              display: { xs: "none", md: "flex" },
+            }}
+          >
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{ my: 2, mx: 1, color: "white", display: "block" }}
               >
                 {page}
               </Button>
@@ -227,5 +229,5 @@ const Navbar = () => {
       </Container>
     </AppBar>
   );
-}
+};
 export default Navbar;

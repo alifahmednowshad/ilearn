@@ -4,27 +4,27 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import UseAuth from "../../hooks/UseAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const theme = createTheme();
 
 export default function GoogleLogIn() {
-  const { googleLogIn } = UseAuth();
+  const { googleLogin } = UseAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = () => {
-    googleLogIn()
+    googleLogin()
       .then((data) => {
-        if (data?.email) {
+        if (data?.uid) {
           const userInfo = {
-            email: data.email,
-            name: data.displayName,
+            email: data?.email,
+            name: data?.displayName,
+            uid: data?.uid,
+            photoURL: data?.photoURL,
           };
-
-          console.log("User info:", userInfo); // Log user info
-
           axios
             .post("http://localhost:5000/user", userInfo, {
               headers: {
@@ -32,18 +32,19 @@ export default function GoogleLogIn() {
               },
             })
             .then((res) => {
-              console.log("Server response:", res.data); // Log server response
               localStorage.setItem("token", res.data.token);
               console.log("Google login success");
-              navigate(from);
+              navigate(from, { replace: true });
             })
             .catch((error) => {
               console.error("Error logging in with Google:", error);
+              toast.error("Error logging in with Google:", error);
             });
         }
       })
       .catch((error) => {
         console.error("Error signing in with Google:", error);
+        toast.error("Error signing in with Google:", error);
       });
   };
 

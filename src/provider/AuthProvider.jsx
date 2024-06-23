@@ -1,14 +1,8 @@
-import {
-  GoogleAuthProvider,
-  createUserWithEmailAndPassword,
-  getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
+import { GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import app from "../firebase/firebaseConfig";
+
 
 export const AuthContext = createContext(null);
 
@@ -56,6 +50,15 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const verifyEmail = () => {
+    setLoading(true);
+    sendEmailVerification(auth.currentUser).then(() => {
+      toast.success("Please check your email to verify.", {
+        position: "top-center",
+      });
+    });
+  };
+
   const logOut = async () => {
     setLoading(true);
     try {
@@ -69,7 +72,16 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const googleLogIn = async () => {
+  const updateUserProfile = (name, email, uid, photoURL) => {
+    return updateProfile(auth.currentUser, {
+      displayName: name,
+      email: email,
+      uid: uid,
+      photoURL: photoURL,
+    });
+  };
+
+  const googleLogin = async () => {
     setLoading(true);
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
@@ -87,12 +99,20 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
-      console.log(currentUser);
     });
     return () => unsubscribe();
   }, []);
 
-  const authInfo = { googleLogIn, user, createUser, signIn, logOut, loading };
+  const authInfo = {
+    googleLogin,
+    verifyEmail,
+    updateUserProfile,
+    user,
+    createUser,
+    signIn,
+    logOut,
+    loading,
+  };
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

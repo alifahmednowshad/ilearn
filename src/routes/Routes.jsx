@@ -3,15 +3,15 @@ import Home from "../pages/Home";
 import ErrorPage from "../pages/ErrorPage";
 import MainLayout from "../layouts/MainLayout";
 import Register from "../pages/Register";
-import LogIn from "../pages/LogIn";
 import DashboardHome from "../pages/DashBoard/DashboardHome";
 import Profile from "../pages/DashBoard/Profile/Profile";
 import DashboardLayout from "../layouts/DashboardLayout";
-import Courses from "../pages/DashBoard/Course/Courses";
 import PrivateRoute from "./PrivateRoute";
-import AddCourse from "../pages/DashBoard/Course/AddCourse";
-
-
+import LogIn from "../pages/LogIn";
+import Courses from "../pages/DashBoard/Admin/Course/Courses";
+import AddCourse from "../pages/DashBoard/Admin/Course/AddCourse";
+import AllUser from "../pages/DashBoard/Admin/AllUser/AllUser";
+import AdminRoute from "./AdminRoute";
 
 const Routes = createBrowserRouter([
   {
@@ -51,12 +51,28 @@ const Routes = createBrowserRouter([
         element: <Profile />,
       },
       {
+        path: "all-user",
+        element: (
+          <AdminRoute>
+            <AllUser />
+          </AdminRoute>
+        ),
+      },
+      {
         path: "courses",
-        element: <Courses />,
+        element: (
+          <AdminRoute>
+            <Courses />
+          </AdminRoute>
+        ),
       },
       {
         path: "addcourse",
-        element: <AddCourse/>,
+        element: (
+          <AdminRoute>
+            <AddCourse />
+          </AdminRoute>
+        ),
       },
     ],
   },

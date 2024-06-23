@@ -1,4 +1,3 @@
-
 import { Link, Outlet } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -12,10 +11,23 @@ import SchoolIcon from "@mui/icons-material/School";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Button from "@mui/material/Button";
+import UseAuth from "../hooks/UseAuth";
+import UseAdmin from "../hooks/useAdmin";
 
 const drawerWidth = 240;
 
 const DashboardLayout = () => {
+  const { user, logOut } = UseAuth();
+  const [isAdmin] = UseAdmin(user?.email);
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      console.log("User logged out successfully");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -26,8 +38,8 @@ const DashboardLayout = () => {
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
-            backgroundColor: "#333", 
-            color: "#fff", 
+            backgroundColor: "#333",
+            color: "#fff",
           },
         }}
         variant="permanent"
@@ -40,18 +52,30 @@ const DashboardLayout = () => {
             </ListItemIcon>
             <ListItemText primary="Profile" />
           </ListItem>
-          <ListItem button component={Link} to="courses">
-            <ListItemIcon>
-              <SchoolIcon style={{ color: "#fff" }} />
-            </ListItemIcon>
-            <ListItemText primary="Courses" />
-          </ListItem>
-          <ListItem button component={Link} to="addcourse">
-            <ListItemIcon>
-              <SchoolIcon style={{ color: "#fff" }} />
-            </ListItemIcon>
-            <ListItemText primary="Add Course" />
-          </ListItem>
+          {isAdmin ? (
+            <>
+              <ListItem button component={Link} to="all-user">
+                <ListItemIcon>
+                  <AccountCircleIcon style={{ color: "#fff" }} />
+                </ListItemIcon>
+                <ListItemText primary="All User" />
+              </ListItem>
+              <ListItem button component={Link} to="courses">
+                <ListItemIcon>
+                  <SchoolIcon style={{ color: "#fff" }} />
+                </ListItemIcon>
+                <ListItemText primary="Courses" />
+              </ListItem>
+              <ListItem button component={Link} to="addcourse">
+                <ListItemIcon>
+                  <SchoolIcon style={{ color: "#fff" }} />
+                </ListItemIcon>
+                <ListItemText primary="Add Course" />
+              </ListItem>
+            </>
+          ) : (
+            <></>
+          )}
           <ListItem button component={Link} to="/">
             <ListItemIcon>
               <HomeIcon style={{ color: "#fff" }} />
@@ -62,6 +86,7 @@ const DashboardLayout = () => {
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ p: 2 }}>
           <Button
+            onSubmit={handleLogout()}
             variant="contained"
             color="secondary"
             startIcon={<LogoutIcon />}

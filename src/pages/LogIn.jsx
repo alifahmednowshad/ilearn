@@ -12,34 +12,39 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import GoogleLogIn from "../components/Auth/GoogleLogIn";
 import UseAuth from "../hooks/UseAuth";
 import toast, { Toaster } from "react-hot-toast";
+import { useForm } from "react-hook-form";
 
 const defaultTheme = createTheme();
 
 export default function LogIn() {
-  const { signIn, user } = UseAuth();
+  const { signIn} = UseAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const from = location.state?.from?.pathname || "/";
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
-
-    signIn(email, password)
+  const onSubmit = (data) => {
+    signIn(data.email, data.password)
       .then(() => {
-        if (user) {
-          toast.success("Login successful!");
-          setTimeout(() => {
-            navigate(from);
-          }, 2000);
-        }
+        toast.success("Login successful!", {
+          position: "top-center",
+          autoClose: 2000,
+        });
+        setTimeout(() => {
+          navigate(from);
+        }, 2000);
       })
       .catch((error) => {
-        console.error("Error signing in:", error);
-        toast.error("Login failed. Please try again.");
+        console.error("Error sign in:", error);
+        toast.error("Login failed. Please check your credentials.", {
+          position: "top-center",
+          autoClose: 3000,
+        });
       });
   };
 
@@ -63,7 +68,7 @@ export default function LogIn() {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -76,6 +81,9 @@ export default function LogIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              {...register("email", { required: "Email is required" })}
+              error={!!errors.email}
+              helperText={errors.email ? errors.email.message : ""}
             />
             <TextField
               margin="normal"
@@ -86,6 +94,9 @@ export default function LogIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              {...register("password", { required: "Password is required" })}
+              error={!!errors.password}
+              helperText={errors.password ? errors.password.message : ""}
             />
             <Button
               type="submit"
